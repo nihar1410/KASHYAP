@@ -48,7 +48,7 @@
     }
 
     audio {
-      display: none;
+      display: none; /* Completely hide audio player */
     }
 
     button {
@@ -69,7 +69,6 @@
       box-shadow: 0 0 30px rgba(0, 114, 255, 0.8);
     }
 
-    /* Explosion effect */
     .explosion {
       position: absolute;
       width: 100px;
@@ -91,7 +90,6 @@
       }
     }
 
-    /* Fake hacked terminal screen */
     .hacked {
       position: fixed;
       top: 0;
@@ -117,33 +115,33 @@
 </head>
 <body>
   <div class="container" id="main">
-    <h1>TAP TO ENJOY!</h1>
+    <h1>SECURITY CHECK IN PROGRESS</h1>
     <audio id="song">
       <source src="gowri gowri.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
     <br /><br />
-    <button onclick="TAPME()">DJ KASHYAP</button>
+    <button onclick="startSequence()">INITIALIZE PROTOCOL</button>
   </div>
 
   <div class="hacked" id="hackedScreen"></div>
 
   <script>
-    function TAPME() {
+    function startSequence() {
       const audio = document.getElementById('song');
 
-      // Play audio after a small delay
+      // Play hidden prank sound
       setTimeout(() => {
         audio.play().catch(err => console.log("Playback error:", err));
       }, 1500);
 
-      // Show alert after 4 seconds
+      // Surprise popup
       setTimeout(() => {
-        alert("😎 YOU'VE BEEN KASHYAPPED! 🎉😂");
+        alert("⚠️ SYSTEM BREACH DETECTED... Initiating lockdown.");
         explode();
       }, 4000);
 
-      // After 6 seconds, show fake hacked terminal screen
+      // Fake hacking screen
       setTimeout(() => {
         document.getElementById("main").style.display = "none";
         const hacked = document.getElementById("hackedScreen");
@@ -165,15 +163,13 @@
 
     function fakeHacking(el) {
       const lines = [
-        "Accessing mainframe...",
-        "Bypassing firewall...",
-        "Injecting DJ_KASHYAP.exe",
-        "Uploading prank virus...",
-        "You have been KASHYAPPED! 💣",
-        "System override...",
-        "Launching party mode 🎉",
-        "Exporting embarrassment logs...",
-        "Joke complete. Have a great day! 😁"
+        ">> Initiating countermeasures...",
+        ">> Tracing IP address...",
+        ">> Signal breach detected from port: DJ_KASHYAP",
+        ">> Deploying visual payload...",
+        ">> Opening musical backdoor...",
+        ">> You’ve been soundbombed! 🎧💣",
+        ">> Have a melodious meltdown! 🎉😂"
       ];
 
       let i = 0;
