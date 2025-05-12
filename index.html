@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NIKHIL KASHYAP</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -33,6 +38,7 @@
       border-radius: 20px;
       box-shadow: 0 0 30px rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
+      z-index: 1;
     }
 
     h1 {
@@ -42,9 +48,7 @@
     }
 
     audio {
-      width: 300px;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+      display: none;
     }
 
     button {
@@ -64,25 +68,123 @@
       transform: scale(1.1);
       box-shadow: 0 0 30px rgba(0, 114, 255, 0.8);
     }
+
+    /* Explosion effect */
+    .explosion {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, orange, red, black);
+      border-radius: 50%;
+      animation: boom 1s forwards;
+      z-index: 10;
+    }
+
+    @keyframes boom {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(10);
+        opacity: 0;
+      }
+    }
+
+    /* Fake hacked terminal screen */
+    .hacked {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      color: #00ff00;
+      font-family: monospace;
+      padding: 20px;
+      overflow: auto;
+      white-space: pre;
+      z-index: 999;
+      display: none;
+      animation: flicker 0.3s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { opacity: 0.8; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="main">
     <h1>TAP TO ENJOY!</h1>
-    <audio id="song" controls>
-      <source src="gowri gowri.mp3" type="audio/mpeg">
+    <audio id="song">
+      <source src="gowri gowri.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
-    <br><br>
+    <br /><br />
     <button onclick="TAPME()">DJ KASHYAP</button>
   </div>
+
+  <div class="hacked" id="hackedScreen"></div>
 
   <script>
     function TAPME() {
       const audio = document.getElementById('song');
-      audio.play().catch(error => {
-        console.log('Playback failed. User interaction required.', error);
-      });
+
+      // Play audio after a small delay
+      setTimeout(() => {
+        audio.play().catch(err => console.log("Playback error:", err));
+      }, 1500);
+
+      // Show alert after 4 seconds
+      setTimeout(() => {
+        alert("😎 YOU'VE BEEN KASHYAPPED! 🎉😂");
+        explode();
+      }, 4000);
+
+      // After 6 seconds, show fake hacked terminal screen
+      setTimeout(() => {
+        document.getElementById("main").style.display = "none";
+        const hacked = document.getElementById("hackedScreen");
+        hacked.style.display = "block";
+        fakeHacking(hacked);
+      }, 6000);
+    }
+
+    function explode() {
+      const explosion = document.createElement('div');
+      explosion.classList.add('explosion');
+      explosion.style.top = `${Math.random() * 80 + 10}%`;
+      explosion.style.left = `${Math.random() * 80 + 10}%`;
+      document.body.appendChild(explosion);
+      setTimeout(() => {
+        explosion.remove();
+      }, 1000);
+    }
+
+    function fakeHacking(el) {
+      const lines = [
+        "Accessing mainframe...",
+        "Bypassing firewall...",
+        "Injecting DJ_KASHYAP.exe",
+        "Uploading prank virus...",
+        "You have been KASHYAPPED! 💣",
+        "System override...",
+        "Launching party mode 🎉",
+        "Exporting embarrassment logs...",
+        "Joke complete. Have a great day! 😁"
+      ];
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < lines.length) {
+          el.textContent += lines[i] + "\n";
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 600);
     }
   </script>
 </body>
