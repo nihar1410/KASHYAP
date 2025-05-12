@@ -48,7 +48,7 @@
     }
 
     audio {
-      display: none; /* Completely hide audio player */
+      display: none;
     }
 
     button {
@@ -75,19 +75,13 @@
       height: 100px;
       background: radial-gradient(circle, orange, red, black);
       border-radius: 50%;
-      animation: boom 1s forwards;
+      animation: boom 2s forwards;
       z-index: 10;
     }
 
     @keyframes boom {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(10);
-        opacity: 0;
-      }
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(10); opacity: 0; }
     }
 
     .hacked {
@@ -98,17 +92,55 @@
       height: 100vh;
       background: black;
       color: #00ff00;
-      font-family: monospace;
+      font-family: 'Courier New', Courier, monospace;
       padding: 20px;
       overflow: auto;
-      white-space: pre;
+      white-space: pre-wrap;
       z-index: 999;
       display: none;
-      animation: flicker 0.3s infinite alternate;
+      animation: backgroundFlicker 0.5s infinite alternate;
     }
 
-    @keyframes flicker {
-      from { opacity: 0.8; }
+    @keyframes backgroundFlicker {
+      0% { background-color: #000000; }
+      100% { background-color: #020b02; }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff00;
+      animation: blink 1s step-start infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .glitch {
+      animation: glitch 0.2s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    .warning {
+      font-size: 2rem;
+      color: red;
+      animation: flash 0.4s infinite alternate;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    @keyframes flash {
+      from { opacity: 0.2; }
       to { opacity: 1; }
     }
   </style>
@@ -116,38 +148,55 @@
 <body>
   <div class="container" id="main">
     <h1>SECURITY CHECK IN PROGRESS</h1>
-    <audio id="song">
-      <source src="gowri gowri.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-    <br /><br />
+    <div id="warningArea"></div>
     <button onclick="startSequence()">INITIALIZE PROTOCOL</button>
+
+    <!-- Audio Files -->
+    <audio id="song"><source src="gowri gowri.mp3" type="audio/mpeg"></audio>
+    <audio id="typing" loop><source src="typing.mp3" type="audio/mpeg"></audio>
+    <audio id="error"><source src="error.mp3" type="audio/mpeg"></audio>
+    <audio id="sting"><source src="sting.mp3" type="audio/mpeg"></audio>
   </div>
 
   <div class="hacked" id="hackedScreen"></div>
 
   <script>
     function startSequence() {
-      const audio = document.getElementById('song');
+      const song = document.getElementById('song');
+      const typing = document.getElementById('typing');
+      const error = document.getElementById('error');
+      const sting = document.getElementById('sting');
 
-      // Play hidden prank sound
-      setTimeout(() => {
-        audio.play().catch(err => console.log("Playback error:", err));
-      }, 1500);
+      // Play initial sting
+      sting.play();
 
-      // Surprise popup
+      // Add warning + glitch
+      const warningText = document.createElement("div");
+      warningText.classList.add("warning");
+      warningText.textContent = "!! SYSTEM BREACH DETECTED !!";
+      document.getElementById("warningArea").appendChild(warningText);
+      document.body.classList.add("glitch");
+
+      // Explosion effect
       setTimeout(() => {
-        alert("⚠️ SYSTEM BREACH DETECTED... Initiating lockdown.");
         explode();
-      }, 4000);
+        error.play();
+      }, 2500);
 
-      // Fake hacking screen
+      // Hold bomb scene longer (~4 seconds)
+      setTimeout(() => {
+        document.body.classList.remove("glitch");
+        warningText.remove();
+      }, 6000);
+
+      // Launch fake hack screen
       setTimeout(() => {
         document.getElementById("main").style.display = "none";
         const hacked = document.getElementById("hackedScreen");
         hacked.style.display = "block";
-        fakeHacking(hacked);
-      }, 6000);
+        typing.play();
+        fakeHacking(hacked, typing, song);
+      }, 7000);
     }
 
     function explode() {
@@ -158,29 +207,68 @@
       document.body.appendChild(explosion);
       setTimeout(() => {
         explosion.remove();
-      }, 1000);
+      }, 2000);
     }
 
-    function fakeHacking(el) {
+    function fakeHacking(el, typing, song) {
       const lines = [
-        ">> Initiating countermeasures...",
-        ">> Tracing IP address...",
-        ">> Signal breach detected from port: DJ_KASHYAP",
-        ">> Deploying visual payload...",
-        ">> Opening musical backdoor...",
-        ">> You’ve been soundbombed! 🎧💣",
-        ">> Have a melodious meltdown! 🎉😂"
+        "[BOOT] Initializing BIOS...",
+        "[INFO] Connecting to secure server...",
+        "[INFO] Connection established.",
+        "[ACCESS] Bypassing security protocols...",
+        "[ALERT] Encryption level: HIGH - Cracking key...",
+        "[SUCCESS] Key decrypted: ************",
+        "[EXEC] Injecting payload: DJ_KASHYAP.EXE",
+        "[TRACE] Locating source...",
+        "[LOG] prank.exe executed successfully 😂",
+        "[FINALIZE] Launching terminal visualizer..."
       ];
 
       let i = 0;
-      const interval = setInterval(() => {
+      const cursor = document.createElement("span");
+      cursor.classList.add("cursor");
+      cursor.textContent = " ";
+
+      function typeLine() {
         if (i < lines.length) {
-          el.textContent += lines[i] + "\n";
-          i++;
+          let line = lines[i];
+          let j = 0;
+
+          const typer = setInterval(() => {
+            if (j < line.length) {
+              el.textContent += line[j];
+              j++;
+            } else {
+              clearInterval(typer);
+              el.textContent += "\n";
+              i++;
+              setTimeout(typeLine, 300);
+            }
+          }, 30);
         } else {
-          clearInterval(interval);
+          typing.pause();
+          generateCodeRain(el);
+          song.play(); // Final surprise
         }
-      }, 600);
+      }
+
+      el.innerHTML = "";
+      el.appendChild(cursor);
+      typeLine();
+    }
+
+    function generateCodeRain(el) {
+      const binaryChars = "01abcdefghijklmnopqrstuvwxyz".split("");
+      const cursor = document.querySelector(".cursor");
+
+      setInterval(() => {
+        let line = "";
+        for (let i = 0; i < 80; i++) {
+          line += binaryChars[Math.floor(Math.random() * binaryChars.length)];
+        }
+        el.insertBefore(document.createTextNode(line + "\n"), cursor);
+        el.scrollTop = el.scrollHeight;
+      }, 100);
     }
   </script>
 </body>
